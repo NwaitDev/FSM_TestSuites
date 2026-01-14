@@ -1,0 +1,21 @@
+@cpp(include="stdio.h,base.hpp,procedures.hpp,filestuff.hpp")
+
+
+package main
+
+    use base
+    use virtualfunctions
+    use filestuff
+    
+    
+    compound type mainCompound()
+
+        component TestReader testReader("test_input.txt", 6)
+        component EvenBitcount sut()
+        component TestWriter testWriter("test_output.txt", 6)
+
+        connector flow1bool_t inputOfSut(testReader.send, sut.bit_input)
+        connector flow1bool_t outputOfSut(sut.out_output, testWriter.recv)
+
+    end
+end

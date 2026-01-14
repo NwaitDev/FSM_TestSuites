@@ -1,0 +1,97 @@
+@cpp(src="filestuff.cpp",include="filestuff.hpp")
+
+// utility functions to write information to external files of the bip system
+// see filestuff.hpp for more information
+package filestuff
+
+
+    use base
+    /////////////////////////OutputStreamManagement////////////////////////////////
+    extern data type CppOutStream
+    extern function emptyFile(string)
+    extern function CppOutStream openOutStream(string)
+    extern function printInStream(CppOutStream, string) // adds the string to the stream as-is
+    extern function printInStream(CppOutStream, float) // adds the number preceded by a space
+    extern function printInStream(CppOutStream, int) // adds the number preceded by a space
+
+    extern function closeStream(CppOutStream)
+
+
+    /////////////////////////InputStreamManagement////////////////////////////////
+    extern data type CppInStream
+    extern function CppInStream openInStream(string)
+
+    extern function readInStream(CppInStream, string) // reads the next string delimited by a non-printable char
+    extern function readInStream(CppInStream, float) // reads the next floating point value
+    extern function readInStream(CppInStream, int) // reads the next integer
+
+    extern function closeStream(CppInStream)
+
+
+    /////////////////////////COMPONENTS////////////////////////////////
+
+
+    atom type TestWriter(string filename, int maxlines)
+        data int current_lines
+        data bool data_to_write
+        data CppOutStream stream
+
+        export port port1bool_t recv(data_to_write)
+        port port_t write()
+
+        place DATA_RCVD, DATA_WRITTEN, FINAL
+
+        initial to DATA_WRITTEN do {
+            current_lines = 0;
+            data_to_write = false; // useless but mandatory initialization
+            stream = openOutStream(filename);
+        }
+
+        on recv from DATA_WRITTEN to DATA_RCVD
+
+        on write from DATA_RCVD to DATA_WRITTEN provided (current_lines < maxlines) do {
+            if (data_to_write) then
+                printInStream(stream, "true\n");
+            else
+                printInStream(stream, "false\n");
+            fi
+            current_lines = current_lines + 1;
+        }
+
+        on write from DATA_RCVD to FINAL provided (current_lines >= maxlines) do {
+            closeStream(stream);
+        }
+    end
+
+    atom type TestReader(string filename, int maxlines)
+        
+        data int current_lines
+        data bool data_to_send
+        data int data_read
+        data CppInStream stream
+
+        export port port1bool_t send(data_to_send)
+        port port_t read()
+
+        place DATA_SENT, DATA_READ, FINAL
+
+        initial to DATA_SENT do {
+            current_lines = 0;
+            data_read = 0;
+            data_to_send = false; // useless but mandatory initialization
+            stream = openInStream(filename);
+        }
+
+        on send from DATA_READ to DATA_SENT
+
+        on read from DATA_SENT to DATA_READ provided (current_lines < maxlines) do {
+            readInStream(stream, data_read);
+            data_to_send = (data_read == 1);
+            current_lines = current_lines + 1;
+        }
+        
+        on read from DATA_SENT to FINAL provided (current_lines >= maxlines) do {
+            closeStream(stream);
+        }
+    end
+end

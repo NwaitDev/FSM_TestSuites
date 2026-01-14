@@ -1,0 +1,3 @@
+.vscode
+BIPcompiled_handwritten/MainApp/output
+BIPcompiled_handwritten/Packages/*/*.o

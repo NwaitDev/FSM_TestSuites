@@ -1,0 +1,35 @@
+@cpp(include="procedures.hpp,base.hpp")
+// need to include this anyway because otherwise, the cpp compiler is lost
+// even if the associated bip files are used
+
+
+package virtualfunctions
+
+
+    use base // for the most basic ports of each components
+    use procedures
+
+    atom type EvenBitcount()
+        data bool even
+        data bool bit
+        export port port1bool_t bit_input(bit)
+        export port port1bool_t out_output(even)
+        port port_t calc()
+        
+        place PARAM_RCVD, CALC_DONE, OUTPUT_RETURNED
+
+        initial to OUTPUT_RETURNED do {
+            even = true;
+            bit = false;
+        }
+
+        on bit_input from OUTPUT_RETURNED to PARAM_RCVD
+
+        on calc from PARAM_RCVD to CALC_DONE do {
+            even_bitcount_proc(even, bit);
+        }
+
+        on out_output from CALC_DONE to OUTPUT_RETURNED
+    end
+
+end

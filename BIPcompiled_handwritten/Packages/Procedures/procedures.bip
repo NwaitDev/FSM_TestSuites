@@ -1,0 +1,7 @@
+@cpp(src="procedures.cpp",include="procedure.hpp")
+
+// chips procedures implemented in cpp for BIP integration 
+package procedures
+    extern function even_bitcount_proc(bool, bool)
+    // be careful, float in BIP means double in cpp
+end

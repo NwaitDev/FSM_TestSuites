@@ -1,0 +1,7 @@
+logical even_bitcount(bool bit) init {
+    bool even = false;
+} then {
+    if (bit){
+        even = ! even;
+    }
+} -> out(even)
