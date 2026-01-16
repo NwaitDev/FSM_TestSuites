@@ -1,4 +1,5 @@
 #include "filestuff.hpp"
+#include <string>
 
 
 
@@ -36,6 +37,14 @@ CppInStream openInStream(std::string filename){
     myfile.open (filename,std::ios_base::app);
     return myfile;
 }
+
+void jump_n_lines(CppInStream& inputstream, int& n){
+    std::string line;
+    for (int i = 0; i<n; ++i) {
+        std::getline(inputstream,line);
+    }
+}
+
 void readInStream(CppInStream& inputstream, std::string& txt){
     inputstream >> txt;
 }

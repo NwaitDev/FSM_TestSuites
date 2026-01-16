@@ -1,0 +1,52 @@
+object Placeholder {
+    PlaceholderChannel next;
+    PlaceholderChannel previous;
+}
+
+spread (int value = input) spreadIdentity 
+among Placeholder {}
+-> @(value)
+-> next(value)
+-> previous(value)
+
+collect (int current_max = 0) collectMax among Placeholder {
+    if(input > current_max){
+        current_max = input;
+    }
+} -> @(current_max)
+-> next(current_max)
+-> previous(current_max)
+
+logical Sum(int x, int y) init {} then {}
+-> out(x+y)
+
+logical Source (int min, int max) init {
+    int randomNumber;
+} then {
+    randomNumber = (int)(random()*(float)(max-min))+min;
+} -> out(randomNumber);
+
+logical Sink (int in) init {} then {}
+
+system {
+    int nbComponents = 10;
+    
+    Source src; Sink snk;
+    src.min(0);
+    src.max(10);
+    Sum [nbComponents] func;
+    Placeholder [nbComponents] loc;
+    for i in range(nbComponents) {
+        
+        func[i].y(i);
+        link func[i] to loc[i];
+        if(i!=0){
+            loc[i].prev(loc[i-1].next);
+            loc[i-1].next(loc[i].prev);
+        }
+        
+        func[i].x((spreadIdentity) src.out);
+        snk.in((collectMax) func[i].out);
+    }
+
+}

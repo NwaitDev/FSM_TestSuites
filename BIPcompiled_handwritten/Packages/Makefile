@@ -21,7 +21,6 @@ OBJ_FILES := $(patsubst %.cpp, %.o, $(SRC_FILES))
 
 # Rule to build all object files
 all: $(OBJ_FILES)
-	touch .updated
 
 # Pattern rule to compile .cpp files to .o files
 %.o: %.cpp %.hpp

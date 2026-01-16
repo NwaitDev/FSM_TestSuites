@@ -3,5 +3,6 @@
 // chips procedures implemented in cpp for BIP integration 
 package procedures
     extern function even_bitcount_proc(bool, bool)
+    extern function password_locking_proc(int, int, int)
     // be careful, float in BIP means double in cpp
 end

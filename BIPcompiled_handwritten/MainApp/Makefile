@@ -3,8 +3,8 @@
 
 PGM := main
 COMPOUND := $(PGM)Compound
-COMPILER_DISTRIB_PATH :=
 
+GENERATOR_PARAMS := test_pap_1.txt
 # Packages path
 PPATH := ../Packages
 
@@ -34,23 +34,28 @@ all: output/build/system
 version:
 	$(COMPILER_DISTRIB_PATH)/bipc.sh --version
 
+generator: generateMain.cpp
+	g++ $< -o $@
+
+main.bip: generator 
+	./$< $(GENERATOR_PARAMS) > main.bip
+
 # Compile $(PGM)
 output/build/system: $(PGM).bip $(BIPSOURCES) $(CPPSOURCES)
 	mkdir -p output/build
-
-	$(COMPILER_DISTRIB_PATH)bipc.sh -p $(PGM) -d "$(COMPOUND)()" $(INCLUDE_BIP_PACKAGES) $(INCLUDE_CPP_PACKAGES) \
+	$(MAKE) -C $(PPATH)
+	bipc.sh -p $(PGM) -d "$(COMPOUND)()" $(INCLUDE_BIP_PACKAGES) $(INCLUDE_CPP_PACKAGES) \
 		--genbip-follow-used-packages \
 		--gencpp-follow-used-packages \
 		$(CPP_EXTRA_OBJ)\
 		--gencpp-output output
-
 	cd output/build && cmake .. -Wno-dev
-
-	$(MAKE) -C output/build 2>errout.log
+	$(MAKE) -C output/build
 
 clean:
 	@echo "$(COLOR_RED)rm -rf output$(COLOR_RESET)"
 	@rm -rf output
+	@rm main.bip
 
 
 run: output/build/system
@@ -60,6 +65,6 @@ run: output/build/system
 	@echo "$(COLOR_BLUE)Running complete!$(COLOR_RESET)"
 
 generatexmi:
-	$(COMPILER_DISTRIB_PATH)bipc.sh -p $(PGM) -d "$(COMPOUND)()" $(INCLUDE_BIP_PACKAGES) $(INCLUDE_CPP_PACKAGES) \
+	bipc.sh -p $(PGM) -d "$(COMPOUND)()" $(INCLUDE_BIP_PACKAGES) $(INCLUDE_CPP_PACKAGES) \
 		--genbip-follow-used-packages \
 		--profile --v FINER -so output -s xmi

@@ -32,4 +32,28 @@ package virtualfunctions
         on out_output from CALC_DONE to OUTPUT_RETURNED
     end
 
+    atom type PasswordLocking()
+        data int password
+        data int state
+        data int output
+        export port port1int_t password_input(password)
+        export port port1int_t out_output(output)
+        port port_t calc()
+        
+        place PARAM_RCVD, CALC_DONE, OUTPUT_RETURNED
+
+        initial to OUTPUT_RETURNED do {
+            state = 0;
+            output = -1;
+            password = 0;
+        }
+
+        on password_input from OUTPUT_RETURNED to PARAM_RCVD
+
+        on calc from PARAM_RCVD to CALC_DONE do {
+            password_locking_proc(state, output, password);
+        }
+
+        on out_output from CALC_DONE to OUTPUT_RETURNED
+    end
 end
