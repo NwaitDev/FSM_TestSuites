@@ -56,4 +56,57 @@ package virtualfunctions
 
         on out_output from CALC_DONE to OUTPUT_RETURNED
     end
+
+
+
+    atom type Source()
+        data int min
+        data int max
+        data int randomNumber
+
+        port port_t calc()
+        export port port1int_t out(randomNumber)
+        export port port2int_t min_and_max(min,max)
+        
+        place PARAM_RCVD, CALC_DONE, OUTPUT_RETURNED
+
+        initial to OUTPUT_RETURNED do {
+            min = 0;
+            max = 0;
+            randomNumber = 0;
+        }
+
+        on min_and_max from OUTPUT_RETURNED to PARAM_RCVD
+
+        on calc from PARAM_RCVD to CALC_DONE do {
+            source_proc(min, max, randomNumber);
+        }
+
+        on out from CALC_DONE to OUTPUT_RETURNED
+    end
+
+    atom type Sink()
+
+        data int in
+        port port_t out()
+        port port_t calc()
+        export port port2int_t in(in)
+        
+        place PARAM_RCVD, CALC_DONE, OUTPUT_RETURNED
+
+        initial to OUTPUT_RETURNED do {
+            in = 0;
+        }
+
+        on in from OUTPUT_RETURNED to PARAM_RCVD
+
+        on calc from PARAM_RCVD to CALC_DONE
+
+        on out from CALC_DONE to OUTPUT_RETURNED
+    end
+
+    // TODO : finish implementation of components 
+    // modeling the specification of collective functions
+    // and Sum component in the collectMax.chips description
+    
 end

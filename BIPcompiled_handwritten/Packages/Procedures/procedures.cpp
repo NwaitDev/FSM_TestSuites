@@ -1,5 +1,8 @@
 #include "procedures.hpp"
 
+double chips_rand(){
+    return (float)(rand()) / (float)(RAND_MAX);
+}
 
 void even_bitcount_proc(bool& even, bool bit){
     if (bit){
@@ -16,4 +19,8 @@ void password_locking_proc(int &state, int& output, int password){
         }
         state = 1;
     }
+}
+
+void source_proc(int min , int max, int& randomNumber){
+    randomNumber = (int)(chips_rand()*(double)(max-min))+min;
 }

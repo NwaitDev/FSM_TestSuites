@@ -28,6 +28,8 @@ package base
 
     // port holding an integer
     port type port1int_t(int v)
+    // version for 2 integers
+    port type port2int_t(int v, int w)
 
     // port holding a boolean
     port type port1bool_t(bool v)
@@ -77,6 +79,15 @@ package base
         define src t0
         on src t0 down {
             t0.v = src.v;
+        }
+    end
+
+    // connector allowing to send a pair of int from src to t
+    connector type flow2int_t(port2int_t src, port2int_t t0)
+        define src t0
+        on src t0 down {
+            t0.v = src.v;
+            t0.w = src.w;
         }
     end
 
