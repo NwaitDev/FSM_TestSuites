@@ -1,3 +1,7 @@
 .vscode
 BIPcompiled_handwritten/MainApp/output
 BIPcompiled_handwritten/Packages/*/*.o
+BIPcompiled_handwritten/MainApp/generator
+BIPcompiled_handwritten/MainApp/errout.log
+BIPcompiled_handwritten/MainApp/main.bip
+*output.txt
